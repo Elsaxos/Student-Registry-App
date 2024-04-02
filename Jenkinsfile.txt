@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Elsaxos/Student-Registry-App'
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+    }
+}

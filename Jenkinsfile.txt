@@ -19,17 +19,17 @@ pipeline {
         }
         stage('Install dependencies') {
             steps {
-                sh 'npm install'
-                sh 'npm install -g wait-on kill-port'
+                bat 'npm install'
+                bat 'npm install -g wait-on kill-port'
             }
         }
         stage('Run tests') {
             steps {
-                sh 'kill-port 8082 || true'
-                sh 'npm run start &'
-                sh 'wait-on http://localhost:8082'
-                sh 'npm test'
-                sh 'kill-port 8082'
+                bat 'kill-port 8082'
+                bat 'npm run start'
+                bat 'wait-on http://localhost:8082'
+                bat 'npm test'
+                bat 'kill-port 8082'
             }
         }
     }
@@ -39,7 +39,7 @@ pipeline {
             echo 'CI Pipeline completed.'
         }
         failure {
-            sh 'kill-port 8081 || true'
+            bat 'kill-port 8081'
         }
     }
 }

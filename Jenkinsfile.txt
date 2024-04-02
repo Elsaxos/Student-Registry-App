@@ -38,7 +38,7 @@ pipeline {
             echo 'CI Pipeline completed.'
         }
         failure {
-            bat 'kill-port 8081'
+            bat 'kill-port 8082'
         }
     }
 }

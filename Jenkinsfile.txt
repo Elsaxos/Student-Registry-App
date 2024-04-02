@@ -25,6 +25,7 @@ pipeline {
         }
         stage('Run tests') {
             steps {
+                bat 'kill-port 8082'
                 bat 'npm run start'
                 bat 'wait-on http://localhost:8082'
                 bat 'npm test'
@@ -38,8 +39,9 @@ pipeline {
             echo 'CI Pipeline completed.'
         }
         failure {
-            bat 'kill-port 8082'
+            bat 'kill-port 8081'
         }
     }
 }
+
 

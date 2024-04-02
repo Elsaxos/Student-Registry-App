@@ -1,31 +1,45 @@
 pipeline {
     agent any
+
+    environment {
+        NODE_VERSION = '21.7.1'
+        SERVICE_ID = 'render-service-id'
+        RENDER_API_KEY = 'render-api-key'
+    }
+  
+    tools {
+        nodejs "${NODE_VERSION}"
+    }
     
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Elsaxos/Student-Registry-App'
+                checkout scm
             }
         }
         stage('Install dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
+                bat 'npm install -g wait-on kill-port'
             }
         }
-        stage('Lint') {
+        stage('Run tests') {
             steps {
-                sh 'npm run lint'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm run build'
+                bat 'npm run start'
+                bat 'wait-on http://localhost:8082'
+                bat 'npm test'
+                bat 'kill-port 8082'
             }
         }
     }
+
+    post {
+        always {
+            echo 'CI Pipeline completed.'
+        }
+        failure {
+            bat 'kill-port 8081'
+        }
+    }
 }
+
